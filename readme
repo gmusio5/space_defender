@@ -1,0 +1,110 @@
+
+SPACE DEFENDER
+___________________________________________________________________________________________________________
+________
+Idea    |
+________|
+Il codice è stato redatto utilizzando il linguaggio C e il supporto della libreria grafica Ncurses.
+Il seguente lavoro è stato sviluppato su macchina virtuale linux a 64 bit.
+
+Il progetto trae ispirazione dalla combinazione dei giochi Space Invaders e Defender. 
+Il gioco prevede che un'astronave posta sulla parte sinistra dello schermo debba difendersi 
+da un'ondata di navicelle nemiche provenienti dalla parte opposta.
+
+Il meccanismo adottato segue il modello PRODUTTORE-CONSUMATORE. In questo progetto sono presenti diversi produttori, 
+quali l'astronave, i missili, le navicelle nemiche e le bombe. E' sufficiente invece un unico consumatore ovvero l'area di gioco.
+
+
+
+******************
+VERSIONE PROCESSI
+******************
+Questa versione è stata implementata attraverso l'utilizzo di una pipe. I processi produttori comunicano scrivendo nella pipe il loro status, 
+il consumatore legge dalla pipe e determina l'azione da eseguire (kill del processo, normale movimento, termine partita).
+
+
+****************
+VERSIONE THREAD 
+****************
+Questa versione prevede l'utilizzo di una variabile globale che rappresenta una generica entità. In analogia con la pipe, quando un produttore (i thread) scrive 
+sulla variabile, viene bloccato il mutex in scrittura e viene sbloccato quello in lettura, in modo tale da evitare la sovrascrittura del dato.
+Allo stesso modo il consumatore al momento della lettura del dato si occupa di bloccare il mutex in lettura e sbloccare quello in scrittura al termine dell'operazione.
+
+
+
+
+______________
+Funzionamento |
+______________|
+Il gioco richiede un riavvio ad ogni partita e non tiene conto di eventuali record riferiti a partite precedenti.
+All'avvio viene automaticamente impostata una dimensione prefissata della finestra. 
+E' comunque possibile fare una resize se desiderata, tenendo conto però di effettuarla al momento in cui si sceglie la difficoltà. 
+Eventuali resize effettuate in altri momenti possono compromettere le funzionalità del gioco.
+E' consigliato quindi giocare con una dimensione della finestra maggiore o uguale a quella settata all'avvio.
+
+I tre livelli di difficoltà vanno a modificare i seguenti parametri:
+	- numero nemici in gioco
+	- velocità movimento nemici
+	- frequenza di generazione bombe
+	- velocità moviemento bombe
+
+
+Il massimo numero di nemici è pari a 9, è comunque possibile impostare un valore inferiore tenendo conto che un numero dispari
+sarà considerato ottimale per lo schieramento iniziale delle navicelle nemiche (freccia).
+
+E' consigliabile non tenere premuto il tasto della barra spaziatrice con l'intento di sparare ripetutamente, 
+questo potrebbe causare dei rallentamenti dovuti alla generazione di numerosi processi e suoni.
+
+
+
+________
+Grafica |
+________|
+Per quanto riguarda la visualizzazione delle entità grafiche si è optato per 
+l'utilizzo di matrici in cui ad ogni cella viene assegnato un diverso colore.
+Gli effetti di distruzione dell'astronave vengono generati mediante la riassegnazione 
+di determinati colori nel momento in cui si viene colpiti.
+
+Le scritte quali il game over, la vincita e il nome del gioco sono state implementate utilizzando delle matrici di caratteri preimpostate.
+E' stata inoltre creata una procedura che permette di stampare i loghi dotati di colore e delay per creare un effetto 3d.
+
+
+
+
+________
+Suoni   |
+________|
+
+Si è deciso di implementare una parte sonora sfruttando delle chiamate a sistema.
+I suoni sono posti in una cartella che risiede nella medesima cartella delle versioni del progetto.
+
+Suoni implementati:
+	- Musica nel menù di avvio
+	- Cambio di difficoltà nel menù di avvio
+	- Musica di background durante la partita
+	- Lancio di un missile
+	- Danno a navicella nemica
+	- Danno all'astronave
+	- Suono per la vincita
+	- Suono per game over
+
+
+
+________
+Avvio   |
+________|
+
+Comandi per un corretto avvio:
+	-disporsi sulla cartella di una versione
+	-direttiva per la pulizia - 
+	
+     __________________________
+    |			       |
+    |	make                   | --> compilazione 
+    |	./spacedefender.out    | --> avvio file eseguibile
+    |	make clean 	       | --> direttiva per la pulizia
+    |__________________________|
+
+
+_____________________________________________________________________________________________________________
+
